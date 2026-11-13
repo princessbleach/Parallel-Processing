@@ -175,73 +175,147 @@ public class ImageProcessor : MonoBehaviour
         return sum;
     }
 
-    void OnGUI()
+ 
+
+void OnGUI()
+{
+    Color pink = new Color(1f, 0.76f, 0.83f);
+    Color lightPink = new Color(1f, 0.91f, 0.94f);
+    Color darkPink = new Color(0.78f, 0.22f, 0.43f);
+    Color textColour = new Color(0.30f, 0.16f, 0.22f);
+    Color white = Color.white;
+
+    // Main background
+    GUI.color = pink;
+    GUI.DrawTexture(
+        new Rect(15, 15, 440, 680),
+        Texture2D.whiteTexture
+    );
+
+    // Header panel
+    GUI.color = darkPink;
+    GUI.DrawTexture(
+        new Rect(15, 15, 440, 65),
+        Texture2D.whiteTexture
+    );
+
+    GUI.color = white;
+
+    GUIStyle heading = new GUIStyle(GUI.skin.label);
+    heading.fontSize = 21;
+    heading.fontStyle = FontStyle.Bold;
+    heading.normal.textColor = white;
+
+    GUI.Label(
+        new Rect(30, 32, 410, 35),
+        "PARALLEL IMAGE PROCESSOR",
+        heading
+    );
+
+    GUIStyle section = new GUIStyle(GUI.skin.label);
+    section.fontSize = 15;
+    section.fontStyle = FontStyle.Bold;
+    section.normal.textColor = darkPink;
+
+    GUIStyle normal = new GUIStyle(GUI.skin.label);
+    normal.fontSize = 13;
+    normal.normal.textColor = textColour;
+
+    GUIStyle result = new GUIStyle(normal);
+    result.fontSize = 17;
+    result.fontStyle = FontStyle.Bold;
+    result.normal.textColor = darkPink;
+
+    // Image panel
+    GUI.color = lightPink;
+    GUI.DrawTexture(
+        new Rect(30, 95, 410, 265),
+        Texture2D.whiteTexture
+    );
+
+    GUI.color = darkPink;
+    GUI.Label(new Rect(45, 105, 380, 25),
+        "IMAGE ANALYSIS", section);
+
+    GUI.color = white;
+
+    if (previewTexture != null)
     {
-        GUI.Box(new Rect(15, 15, 440, 680),
-            "PARALLEL IMAGE PROCESSOR");
-
-        GUILayout.BeginArea(new Rect(35, 50, 400, 630));
-
-        GUI.skin.label.fontSize = 14;
-
-        GUILayout.Label("IMAGE ANALYSIS");
-        GUILayout.Space(10);
-
-        if (previewTexture != null)
-        {
-            GUILayout.Label(
-                previewTexture,
-                GUILayout.Width(220),
-                GUILayout.Height(220)
-            );
-
-            GUILayout.Label(
-                $"Resolution: {previewTexture.width} x {previewTexture.height}"
-            );
-        }
-
-        GUILayout.Label($"Total pixels: {pixelCount:N0}");
-
-        GUILayout.Space(20);
-
-        GUILayout.Label("RED CHANNEL ANALYSIS");
-
-        GUILayout.Label($"Red channel sum: {redChannelSum:N0}");
-
-        GUILayout.Space(20);
-
-        GUILayout.Label("PERFORMANCE BENCHMARK");
-
-        GUILayout.Label(
-            $"Single-threaded: {singleAverage:F4} ms"
+        GUI.DrawTexture(
+            new Rect(45, 140, 180, 180),
+            previewTexture,
+            ScaleMode.ScaleToFit
         );
-
-        GUILayout.Label(
-            $"Jobs + Burst: {parallelAverage:F4} ms"
-        );
-
-        GUILayout.Space(10);
-
-        GUILayout.Label($"Speedup: {speedup:F2}x");
-
-        GUILayout.Space(15);
-
-        GUILayout.Label(
-            benchmarkComplete
-                ? "STATUS: BOTH RESULTS MATCH"
-                : "STATUS: CHECK RESULTS"
-        );
-
-        GUILayout.Space(20);
-
-        if (GUILayout.Button("RUN BENCHMARK AGAIN",
-            GUILayout.Height(40)))
-        {
-            RunBenchmark();
-        }
-
-        GUILayout.EndArea();
     }
+
+    GUI.color = textColour;
+
+    GUI.Label(new Rect(240, 160, 185, 25),
+        $"Resolution: {previewTexture.width} x {previewTexture.height}", normal);
+
+    GUI.Label(new Rect(240, 195, 185, 25),
+        $"Pixels: {pixelCount:N0}", normal);
+
+    // Red channel panel
+    GUI.color = lightPink;
+    GUI.DrawTexture(
+        new Rect(30, 375, 410, 85),
+        Texture2D.whiteTexture
+    );
+
+    GUI.color = darkPink;
+    GUI.Label(new Rect(45, 385, 380, 25),
+        "RED CHANNEL ANALYSIS", section);
+
+    GUI.Label(new Rect(45, 420, 380, 30),
+        $"Red channel sum: {redChannelSum:N0}", result);
+
+    // Performance panel
+    GUI.color = lightPink;
+    GUI.DrawTexture(
+        new Rect(30, 475, 410, 115),
+        Texture2D.whiteTexture
+    );
+
+    GUI.color = darkPink;
+    GUI.Label(new Rect(45, 485, 380, 25),
+        "PERFORMANCE BENCHMARK", section);
+
+    GUI.color = textColour;
+
+    GUI.Label(new Rect(45, 520, 380, 25),
+        $"Single-threaded: {singleAverage:F4} ms", normal);
+
+    GUI.Label(new Rect(45, 550, 380, 25),
+        $"Jobs + Burst: {parallelAverage:F4} ms", normal);
+
+    GUI.color = darkPink;
+
+    GUI.Label(new Rect(45, 600, 380, 30),
+        $"Speedup: {speedup:F2}x", result);
+
+    // Benchmark button
+    GUI.color = darkPink;
+
+    GUIStyle button = new GUIStyle(GUI.skin.button);
+    button.fontSize = 14;
+    button.fontStyle = FontStyle.Bold;
+    button.normal.textColor = white;
+    button.hover.textColor = white;
+    button.normal.background = Texture2D.whiteTexture;
+
+    if (GUI.Button(
+        new Rect(30, 645, 410, 40),
+        "RUN BENCHMARK AGAIN",
+        button))
+    {
+        RunBenchmark();
+    }
+
+    GUI.color = Color.white;
+}
+
+
 
     void OnDestroy()
     {
